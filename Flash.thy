@@ -2299,8 +2299,8 @@ definition CacheStateProp :: "nat \<Rightarrow> nat \<Rightarrow> nat \<Rightarr
   IVar (Para ''Sta.Proc.CacheState'' q) =\<^sub>f Const CACHE_E)"
 
 definition CacheStateProp_Home :: "nat \<Rightarrow> nat \<Rightarrow> nat \<Rightarrow> formula" where
- "CacheStateProp_Home N p q \<equiv> \<not>\<^sub>f (IVar (Para ''Sta.Proc.CacheState'' p) =\<^sub>f Const CACHE_E \<and>\<^sub>f
-  IVar (Ident ''Sta.HomeProc.CacheState'') =\<^sub>f Const CACHE_E)"
+ "CacheStateProp_Home N p q \<equiv> IVar (Para ''Sta.Proc.CacheState'' p) =\<^sub>f Const CACHE_E \<longrightarrow>\<^sub>f
+  \<not>\<^sub>f IVar (Ident ''Sta.HomeProc.CacheState'') =\<^sub>f Const CACHE_E"
 
 definition ABS_PI_Remote_PutX :: "nat \<Rightarrow> rule" where
  "ABS_PI_Remote_PutX N \<equiv> 
