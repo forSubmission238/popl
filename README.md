@@ -186,13 +186,13 @@ In the main directory, we place the main results of our work:
 
 1. The abstract protocol model in Murphi:
 
-    (1)  AbsmutualEx.m
+    (1)  mutualEx.m
 
-    (2)  AbsGerman.m
+    (2)  german.m
 
-    (3)  AbsMesi.m
+    (3)  mesi.m
 
-    (4)  AbsFlash.m
+    (4)  flash.m
 
 2. The Isabelle Proof Script file:
 
