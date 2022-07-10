@@ -1,16 +1,12 @@
 import json
 import murphi
 import murphiparser as parser
-from muserv.muserv import MurphiChk
 import re
 import os
-import time 
 import copy
 import argparse
 
-from settings import MU_PATH, MU_INCLUDE, GXX_PATH, MU_FILE_DIR, MU_CHECK_TIMEOUT, MU_CHECK_MEMORY
 from analyser import Protocol, analyzeParams, inv_strengthen, number_type
-from process import to_murphi
 
 class DontCareExpr(murphi.BaseExpr):
     def __init__(self):
@@ -544,10 +540,11 @@ def abs_strengthen(filename,  output_filename=None, rulename = ''):
     # print(prot)
     suffix=''
     absffix='ABS_'
-    abs_dict = []
     ori_abs_map = copy.deepcopy(prot.abs_rule_map)
     for k,r in ori_abs_map.items():
         if isinstance(r,murphi.MurphiRuleSet) and str(k) == rulename:
+            if (rulename in ('ABS_NI_Remote_Get_Nak', 'ABS_NI_Remote_Get_put','ABS_NI_Remote_GetX_PutX', 'ABS_NI_Remote_GetX_Nak')):
+                print(str(r))
             limits=dict()
             if len(r.var_decls)==1:
                 limits[r.var_decls[0].name]=False
@@ -557,7 +554,8 @@ def abs_strengthen(filename,  output_filename=None, rulename = ''):
                 if absr!=None and absr != r:
                     prot.decls.append(absr)
                     prot.abs_rule_map.update({absr.name:absr})
-                    abs_dict.append({"cond":{r.var_decls[0].name:"false"}, "answer": rulename})
+                if (rulename in ('ABS_NI_Remote_Get_Nak', 'ABS_NI_Remote_Get_put','ABS_NI_Remote_GetX_PutX', 'ABS_NI_Remote_GetX_Nak')):
+                    print('absr is :\n' + str(absr))
 
             elif len(r.var_decls)==2:
                 ori_r = r
@@ -573,7 +571,8 @@ def abs_strengthen(filename,  output_filename=None, rulename = ''):
                     absruleset=murphi.MurphiRuleSet(absrulesetdecls,absr)
                     prot.abs_rule_map.update({absr.name:absr})
                     prot.decls.append(absruleset)
-                    abs_dict.append({"cond":{ori_r.var_decls[0].name:"false", ori_r.var_decls[1].name:"true"}, "answer":rulename+suffix})
+                    if (rulename in ('ABS_NI_Remote_Get_Nak', 'ABS_NI_Remote_Get_put','ABS_NI_Remote_GetX_PutX', 'ABS_NI_Remote_GetX_Nak')):
+                        print('absr is :\n' + str(absr))
             
 
                 limits=dict()
@@ -586,7 +585,8 @@ def abs_strengthen(filename,  output_filename=None, rulename = ''):
                     absruleset=murphi.MurphiRuleSet(absrulesetdecls,absr)
                     prot.abs_rule_map.update({absr.name:absr})
                     prot.decls.append(absruleset)
-                    abs_dict.append({"cond":{ori_r.var_decls[0].name:"true", ori_r.var_decls[1].name:"false"}, "answer":rulename+suffix})
+                    if (rulename in ('ABS_NI_Remote_Get_Nak', 'ABS_NI_Remote_Get_put','ABS_NI_Remote_GetX_PutX', 'ABS_NI_Remote_GetX_Nak')):
+                        print('absr is :\n' + str(absr))
 
                 limits=dict()
                 limits[r.var_decls[0].name]=False
@@ -596,54 +596,32 @@ def abs_strengthen(filename,  output_filename=None, rulename = ''):
                 if absr!=None and absr != r:
                     prot.decls.append(absr)
                     prot.abs_rule_map.update({absr.name:absr})
-                    abs_dict.append({"cond":{ori_r.var_decls[0].name:"false", ori_r.var_decls[1].name:"false"}, "answer":rulename+suffix})
+                    if (rulename in ('ABS_NI_Remote_Get_Nak', 'ABS_NI_Remote_Get_put','ABS_NI_Remote_GetX_PutX', 'ABS_NI_Remote_GetX_Nak')):
+                        print('absr is :\n' + str(absr))
+                
 
         else:
              continue      
+    
+    # print(str(prot))
     if output_filename:
         with open(output_filename, "w") as f:
             f.write(str(prot))
 
-    return abs_dict
 
-def doMurphiCheck(name, checked):
-    """cmd[0] == SET_MU_CONTEXT:
-        
-    In this case, cmd should be [length, command, command_id, name, context]
-    """
-    # mu = MurphiChk(name, MU_PATH, MU_INCLUDE, GXX_PATH, MU_FILE_DIR,  
-    #         memory=MU_CHECK_MEMORY, timeout=MU_CHECK_TIMEOUT)
-    # res=mu.myCheck()
-    # print(checked)
-    mu = MurphiChk(name, MU_PATH, MU_INCLUDE,  GXX_PATH, MU_FILE_DIR, 
-            memory=MU_CHECK_MEMORY, timeout=MU_CHECK_TIMEOUT)
-    res, checked=mu.myCheck(checked)
-    # print(res)
-    return res, checked
-
-def test_abs_str(flag, name, inv_num):
+def test_abs_str(flag, name, lemmas):
     #基本设置
     data_dir = '.'
     protocol_name = name
     #读取已有的化简过的rule
-    rule_tuple = []
     string_list = []
     rulefile = ''
-    print("reading useful_rule-{}".format(flag))
-    with open('./{}/useful_rule/useful_rule-{}.txt'.format(protocol_name,flag), 'r') as f:
-        rulefile = f.read()
-    rules = list(re.findall(r'rule_\w+:\s*(.*?)\n', rulefile))
-    for rule in rules:
-        pre = rule.split('->')[0]
-        conse = ' -> '.join(rule.split('->')[1:])
-        conse = re.findall(r'[^()]+',conse)[0]
-        if len(conse.split('->')) > 1:
-            conse_1, conse_2 = conse.split('->')[0], conse.split('->')[1]
-            rule_tuple.append((set(pre.split(' & ')),(set(conse_1.split(' & ')), conse_2)))
-        else:
-            rule_tuple.append((set(pre.split(' & ')),conse))
-        string_list.append(rule)
-    assert len(string_list) == len(rule_tuple) and len(string_list) != 0
+    for lemma in lemmas:
+        print("reading {}".format(lemma))
+        with open('./{}/useful_rule/{}.txt'.format(protocol_name,lemma), 'r') as f:
+            rulefile = f.read()
+        string_list.append(rulefile)
+    assert len(string_list) != 0
     print("read success!, useful_rules'len : {}".format(len(string_list)))
     rest_string_list = string_list
     if os.path.exists('./ABS{0}.m'.format(protocol_name)):
@@ -665,10 +643,10 @@ def test_abs_str(flag, name, inv_num):
                 if flag == rulename:
                     _, rev_dict = number_type(param_name_dict)
                     print("rulename is {}".format(rulename))
-                    print('rev_dict is {}'.format(rev_dict))
+                    # print('rev_dict is {}'.format(rev_dict))
                     rules_str = re.sub(rulename, 'ABS_'+rulename, rules_str)
                     ruleset = 'ruleset ' + params + ' do\n' + rules_str + '\nendruleset;'
-                    str_info, inv_idx= inv_strengthen(rest_string_list, ruleset, all_types=all_types, NODE2para_dict=rev_dict)
+                    str_info= inv_strengthen(rest_string_list, ruleset, all_types=all_types, NODE2para_dict=rev_dict)
                     #加强结束
     assert len(rest_string_list) != 0
     assert str_info != ''
@@ -682,20 +660,8 @@ def test_abs_str(flag, name, inv_num):
             protocol_3 = re.sub(r'ruleset.*?do\n\nendruleset;', '', protocol_2)
             f.write(protocol_3)
             f.write(str_info+'\n')
-            for cnt, stmt in enumerate(rest_string_list, inv_num):
-                inv_name = 'Lemma_%d'%cnt
-                inv = to_murphi(inv_name, stmt, all_types, rev_dict)
-                f.write(inv+'\n\n')
-            for i in inv_idx:
-                inv_name = 'Lemma_%d'%(i+inv_num)
-                inv_info.append(inv_name)
-            #记录加强信息
-            with open("{}/{}/abs_process.csv".format(data_dir, protocol_name),"a") as f:
-                f.write("{},".format(flag))
-                f.write(','.join(inv_info)+'\n')
         #抽象
         abs_strengthen("{}/ABS{}.m".format(data_dir, name), "{}/ABS{}.m".format(data_dir, name), rulename = 'ABS_{}'.format(flag))
-    return inv_num+len(rest_string_list)
 
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser(description='Learning based CMP')

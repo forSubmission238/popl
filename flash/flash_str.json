@@ -18,13 +18,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "PI_Remote_Get_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }
@@ -49,13 +49,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "PI_Remote_GetX_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }
@@ -82,13 +82,13 @@
         "abstract": [
             {
                 "cond": {
-                    "dst": true
+                    "i": true
                 },
                 "answer": "PI_Remote_PutX_ref"
             },
             {
                 "cond": {
-                    "dst": false
+                    "i": false
                 },
                 "answer": "ABS_PI_Remote_PutX"
             }
@@ -107,13 +107,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "PI_Remote_Replace_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }
@@ -132,13 +132,13 @@
         "abstract": [
             {
                 "cond": {
-                    "dst": true
+                    "i": true
                 },
                 "answer": "NI_Nak_ref"
             },
             {
                 "cond": {
-                    "dst": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }
@@ -163,13 +163,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_Local_Get_Nak_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }
@@ -182,13 +182,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_Local_Get_Get_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "ABS_NI_Local_Get_Get"
             }
@@ -201,13 +201,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_Local_Get_Put_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "ABS_NI_Local_Get_Put"
             }
@@ -236,8 +236,8 @@
             },
             {
                 "cond": {
-                    "dst": false,
-                    "src": true
+                    "src": true,
+                    "dst": false
                 },
                 "answer": "ABS_NI_Remote_Get_Nak_dst"
             },
@@ -259,13 +259,13 @@
         "abstract": [
             {
                 "cond": {
-                    "dst": true
+                    "i": true
                 },
                 "answer": "NI_Remote_Get_Nak_Home_ref"
             },
             {
                 "cond": {
-                    "dst": false
+                    "i": false
                 },
                 "answer": "ABS_NI_Remote_Get_Nak_Home"
             }
@@ -295,8 +295,8 @@
             },
             {
                 "cond": {
-                    "dst": false,
-                    "src": true
+                    "src": true,
+                    "dst": false
                 },
                 "answer": "ABS_NI_Remote_Get_Put_dst"
             },
@@ -319,13 +319,13 @@
         "abstract": [
             {
                 "cond": {
-                    "dst": true
+                    "i": true
                 },
                 "answer": "NI_Remote_Get_Put_Home_ref"
             },
             {
                 "cond": {
-                    "dst": false
+                    "i": false
                 },
                 "answer": "ABS_NI_Remote_Get_Put_Home"
             }
@@ -338,13 +338,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_Local_GetX_Nak_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }
@@ -357,13 +357,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_Local_GetX_GetX_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "ABS_NI_Local_GetX_GetX"
             }
@@ -376,13 +376,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_Local_GetX_PutX1_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "ABS_NI_Local_GetX_PutX1"
             }
@@ -395,13 +395,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_Local_GetX_PutX2_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "ABS_NI_Local_GetX_PutX2"
             }
@@ -414,13 +414,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_Local_GetX_PutX3_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "ABS_NI_Local_GetX_PutX3"
             }
@@ -449,8 +449,8 @@
             },
             {
                 "cond": {
-                    "dst": false,
-                    "src": true
+                    "src": true,
+                    "dst": false
                 },
                 "answer": "ABS_NI_Remote_GetX_Nak_dst"
             },
@@ -472,13 +472,13 @@
         "abstract": [
             {
                 "cond": {
-                    "dst": true
+                    "i": true
                 },
                 "answer": "NI_Remote_GetX_Nak_Home_ref"
             },
             {
                 "cond": {
-                    "dst": false
+                    "i": false
                 },
                 "answer": "ABS_NI_Remote_GetX_Nak_Home"
             }
@@ -508,8 +508,8 @@
             },
             {
                 "cond": {
-                    "dst": false,
-                    "src": true
+                    "src": true,
+                    "dst": false
                 },
                 "answer": "ABS_NI_Remote_GetX_PutX_dst"
             },
@@ -532,13 +532,13 @@
         "abstract": [
             {
                 "cond": {
-                    "dst": true
+                    "i": true
                 },
                 "answer": "NI_Remote_GetX_PutX_Home_ref"
             },
             {
                 "cond": {
-                    "dst": false
+                    "i": false
                 },
                 "answer": "ABS_NI_Remote_GetX_PutX_Home"
             }
@@ -557,13 +557,13 @@
         "abstract": [
             {
                 "cond": {
-                    "dst": true
+                    "i": true
                 },
                 "answer": "NI_Remote_Put_ref"
             },
             {
                 "cond": {
-                    "dst": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }
@@ -582,13 +582,13 @@
         "abstract": [
             {
                 "cond": {
-                    "dst": true
+                    "i": true
                 },
                 "answer": "NI_Remote_PutX_ref"
             },
             {
                 "cond": {
-                    "dst": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }
@@ -601,13 +601,13 @@
         "abstract": [
             {
                 "cond": {
-                    "dst": true
+                    "i": true
                 },
                 "answer": "NI_Inv_ref"
             },
             {
                 "cond": {
-                    "dst": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }
@@ -622,13 +622,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_InvAck1_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "ABS_NI_InvAck1"
             }
@@ -641,13 +641,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_InvAck2_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }
@@ -672,13 +672,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_ShWb_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "ABS_NI_ShWb"
             }
@@ -691,13 +691,13 @@
         "abstract": [
             {
                 "cond": {
-                    "src": true
+                    "i": true
                 },
                 "answer": "NI_Replace_ref"
             },
             {
                 "cond": {
-                    "src": false
+                    "i": false
                 },
                 "answer": "skipRule"
             }

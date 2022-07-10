@@ -1,9 +1,5 @@
 import re
 
-import time
-from process import to_murphi
-
-
 class TypeDef(object):
     """
     Deal with type and const in murphi
@@ -233,20 +229,17 @@ class Guard(object):
 def inv_strengthen(used_string_list, rule, all_types, NODE2para_dict):
     str_global = []
     str_local = []
-    global_idx = []
-    local_idx = []
     for i, r in enumerate(used_string_list):
-        murphi_string = to_murphi(inv_name='',rule=r, all_types=all_types,NODE2para_dict=NODE2para_dict)
-        content = re.findall(r'invariant.*?->\n(.*?);',murphi_string,re.S)[0]
+        # murphi_string = to_murphi(inv_name='',rule=r, all_types=all_types,NODE2para_dict=NODE2para_dict)
+        murphi_string = r
+        content = re.findall(r'invariant.*?->\n(.*?);',murphi_string,flags=re.S)[0]
         if 'forall' in content:
-            content = re.sub(r'\nend', '', content)
+            content = re.sub(r'\nend', '', content, flags=re.S)
             content += '\nend'
             str_local.append(content)
-            local_idx.append(i)
         else:
             content = re.sub(r'\nend', '', content)
             str_global.append(content)
-            global_idx.append(i)
     pre = rule.split('==>')[0]
     action = rule.split('==>')[1]
     str_info = pre
@@ -257,7 +250,7 @@ def inv_strengthen(used_string_list, rule, all_types, NODE2para_dict):
         str_info += '&'.join(str_local)
     str_info += '\n==>\n'
     str_info += action
-    return str_info, global_idx + local_idx
+    return str_info
 
 class Ruleset(object):
     def __init__(self, data_dir, protocol_name, text, type):
@@ -325,6 +318,6 @@ class Protocol(object):
     def collect_atoms(self):
         text = self.read_file()
         typedf = TypeDef(text)
-        ruleset = Ruleset(self.data_dir, self.protocol_name, text, typedf.para)
-        ruleset.collect_atoms_from_ruleset()
+        # ruleset = Ruleset(self.data_dir, self.protocol_name, text, typedf.para)
+        # ruleset.collect_atoms_from_ruleset()
         return typedf.type

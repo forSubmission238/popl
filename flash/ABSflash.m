@@ -893,8 +893,8 @@ invariant "CacheStateProp"
 invariant "CacheStateProp_Home"
   forall p : NODE do
     forall q : NODE do
-      !(Sta.Proc[p].CacheState = CACHE_E &
-      Sta.HomeProc.CacheState = CACHE_E)
+      Sta.Proc[p].CacheState = CACHE_E ->
+        !(Sta.HomeProc.CacheState = CACHE_E)
     end
   end;
 
@@ -1079,7 +1079,6 @@ endrule;
 
 ruleset dst : NODE do
 rule "ABS_NI_Remote_Get_Nak_src"
-  !(Other = dst) &
   Sta.Proc[dst].CacheState != CACHE_E &
   Sta.Dir.Pending &
   !Sta.Dir.Local &
@@ -1095,7 +1094,6 @@ endruleset;
 
 ruleset src : NODE do
 rule "ABS_NI_Remote_Get_Nak_dst"
-  !(src = Other) &
   Sta.UniMsg[src].Cmd = UNI_Get &
   !Sta.UniMsg[src].HomeProc &
   Sta.UniMsg[src].Proc = Other &
@@ -1146,7 +1144,6 @@ endrule;
 
 ruleset dst : NODE do
 rule "ABS_NI_Remote_Get_Put_src"
-  !(Other = dst) &
   Sta.Proc[dst].CacheState = CACHE_E &
   Sta.Dir.Pending &
   !Sta.Dir.Local &
@@ -1175,7 +1172,6 @@ endruleset;
 
 ruleset src : NODE do
 rule "ABS_NI_Remote_Get_Put_dst"
-  !(src = Other) &
   Sta.UniMsg[src].Cmd = UNI_Get &
   !Sta.UniMsg[src].HomeProc &
   Sta.UniMsg[src].Proc = Other &
@@ -1256,7 +1252,6 @@ endrule;
 
 ruleset dst : NODE do
 rule "ABS_NI_Remote_GetX_Nak_src"
-  !(Other = dst) &
   Sta.Proc[dst].CacheState != CACHE_E &
   Sta.Dir.Pending &
   !Sta.Dir.Local &
@@ -1272,7 +1267,6 @@ endruleset;
 
 ruleset src : NODE do
 rule "ABS_NI_Remote_GetX_Nak_dst"
-  !(src = Other) &
   Sta.UniMsg[src].Cmd = UNI_GetX &
   !Sta.UniMsg[src].HomeProc &
   Sta.UniMsg[src].Proc = Other &
@@ -1322,7 +1316,6 @@ endrule;
 
 ruleset dst : NODE do
 rule "ABS_NI_Remote_GetX_PutX_src"
-  !(Other = dst) &
   Sta.Proc[dst].CacheState = CACHE_E &
   Sta.Dir.Pending &
   !Sta.Dir.Local &
@@ -1351,7 +1344,6 @@ endruleset;
 
 ruleset src : NODE do
 rule "ABS_NI_Remote_GetX_PutX_dst"
-  !(src = Other) &
   Sta.UniMsg[src].Cmd = UNI_GetX &
   !Sta.UniMsg[src].HomeProc &
   Sta.UniMsg[src].Proc = Other &
@@ -1457,17 +1449,34 @@ begin
   Sta.Collecting := false;
 endrule;
 
-invariant "Lemma_3a"
+invariant "Lemma_1"
   forall src : NODE do
     forall dst : NODE do
-      src != dst &
-      Sta.UniMsg[src].Cmd = UNI_GetX &
-      !Sta.UniMsg[src].HomeProc &
-      Sta.UniMsg[src].Proc = dst ->
+      Sta.Proc[dst].CacheState = CACHE_E ->
+        forall p : NODE do
+          p != dst ->
+            Sta.Dir.Dirty &
+            Sta.WbMsg.Cmd != WB_Wb &
+            Sta.ShWbMsg.Cmd != SHWB_ShWb &
+            Sta.Proc[p].CacheState != CACHE_E &
+            Sta.HomeProc.CacheState != CACHE_E &
+            Sta.HomeUniMsg.Cmd != UNI_Put &
+            Sta.UniMsg[p].Cmd != UNI_PutX &
+            Sta.HomeUniMsg.Cmd != UNI_PutX
+        end
+    end
+  end;
+
+
+invariant "Lemma_3b"
+  forall src : NODE do
+    forall dst : NODE do
+      Sta.HomeUniMsg.Cmd = UNI_GetX &
+      !Sta.HomeUniMsg.HomeProc &
+      Sta.HomeUniMsg.Proc = dst ->
         Sta.Dir.Pending &
         !Sta.Dir.Local &
-        !Sta.HomePendReqSrc &
-        Sta.PendReqSrc = src &
+        Sta.HomePendReqSrc &
         Sta.FwdCmd = UNI_GetX
     end
   end;
@@ -1503,6 +1512,22 @@ invariant "Lemma_2b"
   end;
 
 
+invariant "Lemma_3a"
+  forall src : NODE do
+    forall dst : NODE do
+      src != dst &
+      Sta.UniMsg[src].Cmd = UNI_GetX &
+      !Sta.UniMsg[src].HomeProc &
+      Sta.UniMsg[src].Proc = dst ->
+        Sta.Dir.Pending &
+        !Sta.Dir.Local &
+        !Sta.HomePendReqSrc &
+        Sta.PendReqSrc = src &
+        Sta.FwdCmd = UNI_GetX
+    end
+  end;
+
+
 invariant "Lemma_4"
   forall dst : NODE do
     forall src : NODE do
@@ -1519,39 +1544,6 @@ invariant "Lemma_4"
                 Sta.UniMsg[q].HomeProc &
                 !Sta.HomePendReqSrc &
                 Sta.PendReqSrc = q )
-        end
-    end
-  end;
-
-
-invariant "Lemma_3b"
-  forall src : NODE do
-    forall dst : NODE do
-      Sta.HomeUniMsg.Cmd = UNI_GetX &
-      !Sta.HomeUniMsg.HomeProc &
-      Sta.HomeUniMsg.Proc = dst ->
-        Sta.Dir.Pending &
-        !Sta.Dir.Local &
-        Sta.HomePendReqSrc &
-        Sta.FwdCmd = UNI_GetX
-    end
-  end;
-
-
-invariant "Lemma_1"
-  forall src : NODE do
-    forall dst : NODE do
-      Sta.Proc[dst].CacheState = CACHE_E ->
-        forall p : NODE do
-          p != dst ->
-            Sta.Dir.Dirty &
-            Sta.WbMsg.Cmd != WB_Wb &
-            Sta.ShWbMsg.Cmd != SHWB_ShWb &
-            Sta.Proc[p].CacheState != CACHE_E &
-            Sta.HomeProc.CacheState != CACHE_E &
-            Sta.HomeUniMsg.Cmd != UNI_Put &
-            Sta.UniMsg[p].Cmd != UNI_PutX &
-            Sta.HomeUniMsg.Cmd != UNI_PutX
         end
     end
   end;

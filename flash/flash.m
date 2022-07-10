@@ -861,6 +861,8 @@ begin
 endrule;
 endruleset;
 
+-------------------------------------------------------------------------------
+
 invariant "CacheStateProp"
   forall p : NODE do forall q : NODE do
     p != q ->
@@ -869,5 +871,6 @@ invariant "CacheStateProp"
 
 invariant "CacheStateProp_Home"
   forall p : NODE do forall q : NODE do
-    !(Sta.Proc[p].CacheState = CACHE_E & Sta.HomeProc.CacheState = CACHE_E)
+    Sta.Proc[p].CacheState = CACHE_E ->
+    !(Sta.HomeProc.CacheState = CACHE_E)
   end end;

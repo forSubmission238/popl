@@ -402,7 +402,10 @@ class OpExpr(BaseExpr):
         elif self.op in ('&', '|'):
             return "%s %s\n%s" % (s1, self.op, s2)
         elif self.op in ('->'):
-            return "%s ->\n%s" % (s1, indent(s2, 2))
+            if isinstance(self.expr2, OpExpr) and self.expr2.op == '->':
+                return "%s ->\n(%s)" % (s1, indent(s2, 2))
+            else:
+                return "%s ->\n%s" % (s1, indent(s2, 2))
         else:
             raise NotImplementedError
 
@@ -714,6 +717,7 @@ class MurphiProtocol:
             else:
                 raise NotImplementedError
         #refine abs_r_src etc
+    def addition(self):
         for k in self.ori_rule_map.keys():
             r=self.ori_rule_map[k]
             if isinstance(r, MurphiRuleSet):
@@ -729,7 +733,7 @@ class MurphiProtocol:
                             ar.rule.addSpecialGuard(addf)
                         else:
                             pass
-                
+            
                     
 
     def __str__(self):

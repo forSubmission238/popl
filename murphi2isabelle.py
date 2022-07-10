@@ -2180,13 +2180,14 @@ def genAllRuleSetStuff(prot,str_data,initSpecs):
         proof14,proof16]+proof17s))
     return(res)   
 
-def translateProtocol(prot, spec_data,str_data):
+def translateProtocol(prot, str_data):
     defs = []
-    defs.extend(translateAllEnum(prot, spec_data))
+    defs.extend(translateAllEnum(prot, str_data))
     defs.extend(translateBooleans())
     defs.extend(translateEnvByStartState(prot))
     (res,initSpecs)=translateStartState(prot)
     defs.extend(res)
+    str_data = str_data[1:]
     defs.extend(translateAllSpecs(prot)) 
     defs.extend(genSymLemmas(prot))
     defs.extend(genSterengthenLemmas(prot,str_data))
@@ -2194,18 +2195,19 @@ def translateProtocol(prot, spec_data,str_data):
     defs.extend(genAllRuleSetStuff(prot,str_data,initSpecs))
     return defs
 
-def translateFile(filename, spec_filename, str_file, theory_name):
+def translateFile(filename, str_file, theory_name):
     prot = murphiparser.parse_file(filename)
+    prot.addition()
 
-    with open(spec_filename, "r") as spec:
-        spec_data = json.load(spec)
+    # with open(spec_filename, "r") as spec:
+    #     spec_data = json.load(spec)
 
     with open(str_file, "r") as spec1:
         str_data = json.load(spec1)
 
     with open(theory_name + ".thy", "w") as f:
         f.write(isabelle.header(theory_name))
-        defs = translateProtocol(prot, spec_data,str_data)
+        defs = translateProtocol(prot, str_data)
         for t in defs:
             try:
                 print("t=%s\n"%str(t))
@@ -2222,8 +2224,8 @@ def translateFile(filename, spec_filename, str_file, theory_name):
         extLemma.test()
         print((extLemma.genLemma1().export()))'''
 if __name__ == "__main__":
-    translateFile("mutualEx1.m", "mutualEx1.json", "mutualEx_str.json", "MutualEx")
-    translateFile("german.m", "german.json","german_str.json", "German")
-    translateFile("flash_ctc10.m", "flash_ctc10.json", "flash_str.json", "Flash")
-    translateFile("mesi.m", "mesi.json", "mesi_str.json", "Mesi")
-    
+    # translateFile("mutualEx1.m", "mutualEx1.json", "mutualEx_str.json", "MutualEx")
+    # translateFile("german.m", "german.json","german_str.json", "German")
+    # translateFile("flash_ctc10.m", "flash_ctc10.json", "flash_str.json", "Flash")
+    # translateFile("mesi.m", "mesi.json", "mesi_str.json", "Mesi")
+    translateFile("flash_ctc10.m", "flash_ctc10_str.json", "Flash")

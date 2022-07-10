@@ -56,7 +56,7 @@ grammar = r"""
     
     ?cmds: (cmd ";")*                                     -> cmds
 
-    ?startstate: "startstate" ESCAPED_STRING "begin" cmds "endstartstate" ";"
+    ?startstate: "startstate" ESCAPED_STRING ("begin")? cmds "endstartstate" ";"
 
     ?rule: "rule" ESCAPED_STRING expr "==>" "begin" cmds "endrule" ";"
 

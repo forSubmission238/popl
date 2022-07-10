@@ -43,7 +43,6 @@ var
   CurPtr : ABS_NODE;
 
 startstate "Init"
-begin
   for i : NODE do
     Chan1[i].Cmd := Empty;
     Chan2[i].Cmd := Empty;

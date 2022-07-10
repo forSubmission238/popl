@@ -15,7 +15,6 @@ var
   x : boolean;
 
 startstate "Init"
-begin
   for i : NODE do
     n[i] := I;
   end;
