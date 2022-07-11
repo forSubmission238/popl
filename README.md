@@ -36,7 +36,7 @@ The ABSprot.m is an abstraction of the original protocol. It contains the origin
 
 The abs_process.csv file records the protocol strengthening information, including which rules were strengthened and which lemmas were used in the process. Notice that these processes are recorded in sequence.
 
-![img](file:///C:/Users/lzm/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg)
+![img](./images/image_lemma.png)
 
 As shown above, flash is strengthened in order: ‘PI_Remote_PutX’, ‘NI_Remote_Get_Nak’,‘NI_Remote_Get_Nak_Home’,‘NI_Remote_Get_Put’ … For ‘NI_Remote_Get_Put’, using Lemma2a,Lemma1 to strengthen it According to the order.
 
